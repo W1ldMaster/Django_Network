@@ -3,3 +3,4 @@ venv/
 .idea/
 .git/
 DjangoSNetwork/__pycache__/
+virtenv/
