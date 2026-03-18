@@ -36,7 +36,7 @@ def based(request):
     template = 'homework.html'
     title = 'Yandex'
     text = 'Сайт для перехода на официальный Яндекс'
-    url = 'ya.ru'
+    url = 'https://ya.ru'
 
     context = {
         'title': title,
