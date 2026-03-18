@@ -35,7 +35,7 @@ def index3(request):
 def based(request):
     template = 'homework.html'
     title = 'Yandex'
-    text = 'Сайт для перехода на официальный Яндекс'
+    text = 'Ссылка для перехода на официальный сайт Яндекс'
     url = 'https://ya.ru'
 
     context = {

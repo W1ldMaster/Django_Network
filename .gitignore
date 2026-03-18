@@ -2,5 +2,6 @@
 venv/
 .idea/
 .git/
-DjangoSNetwork/__pycache__/
+*/__pycache__/
 virtenv/
+db.sqlite3

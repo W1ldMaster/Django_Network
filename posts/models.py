@@ -1,10 +1,13 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
-# Create your models here.
-# class Post(models.Model):
-#     text =
-#     author =
-#     created_at =
+User = get_user_model()
+
+
+class Post(models.Model):
+    text = models.TextField() # max_length=int
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    created_at = models.DateTimeField(auto_now_add=True)
 #     comments =
 #     group =
 #     image =
@@ -23,6 +26,3 @@ from django.db import models
 #     id_fed =
 #     created_at =
 #
-# class User(models.Model):
-#
-
