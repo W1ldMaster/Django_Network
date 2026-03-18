@@ -1,3 +1,47 @@
 from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse
 
-# Create your views here.
+
+def index(request):
+    template = 'temp.html'
+    title = 'site'
+    context = {
+        'title': title,
+        'text': 'Главная страница'
+    }
+    return render(request, template, context)
+
+
+def index2(request):
+    template = 'temp.html'
+    title = 'site'
+    context = {
+        'title': title,
+        'text': 'Вложенная страница'
+    }
+    return render(request, template, context)
+
+
+def index3(request):
+    template = 'temp.html'
+    title = 'site'
+    context = {
+        'title': title,
+        'text': 'Какая-то страница'
+    }
+    return render(request, template, context)
+
+
+def based(request):
+    template = 'homework.html'
+    title = 'Yandex'
+    text = 'Сайт для перехода на официальный Яндекс'
+    url = 'ya.ru'
+
+    context = {
+        'title': title,
+        'text': text,
+        'url': url
+    }
+
+    return render(request, template, context)
