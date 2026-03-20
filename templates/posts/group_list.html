@@ -1,27 +1,41 @@
-{% extends "base.html" %}
-{% block content %}
+{% comment %}
+<!--{% extends "base.html" %}-->
+{% endcomment %}
+<!--{% block content %}-->
 <div class="container py-5">
   <h1>
     {{group.slug}}
   </h1>
   <p>
     Группа любителей {{group.slug}} |
-    <a href="{% url 'posts:all_groups' %}">Показать все группы</a>
+    <a href='https://ya.ru'>Показать все группы</a>
   </p>
   <article>
-    {% for post in page_obj %}
+    {% for post in posts %}
     <ul>
       <li>
-        Автор: {{ post.author.get_full_name }}
+        Ник: {{ post.author.get_username }}
       </li>
       <li>
-        Дата публикации: {{ post.pub_date|date:"d E Y" }}
+        Имя и Фамилия: {{ post.author.get_full_name }}
+      </li>
+      <li>
+        Дата публикации: {{ post.created_at|date:"d E Y" }}
       </li>
     </ul>
-    <p>{{ post.text }}</p>
+    <p class="ptext"> {{post.text}}</p>
     {% if not forloop.last %}
     <hr>{% endif %}
     {% endfor %}
 </div>
-{% include 'posts/includes/paginator.html' %}
+<!--{% include 'posts/includes/paginator.html' %}-->
 {% endblock %}
+
+<style>
+  .ptext
+  {
+  font-size: 19px;
+  background-color: lightgray;
+  font-family: 'Comic Sans MS';
+  }
+</style>

@@ -4,4 +4,3 @@ venv/
 .git/
 */__pycache__/
 virtenv/
-db.sqlite3
