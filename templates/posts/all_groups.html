@@ -1,11 +1,16 @@
+{% comment %}
 {% extends "base.html" %}
+{% endcomment %}
 {% block content %}
 <div class="container py-5">
     <article>
         {% for gr in groups %}
         <ul>
             <li>
-                Группа:<a href="{% url 'posts:group_list' gr.slug %}"> {{ gr.title }} </a>
+                Группа:<a href="{% url 'posts:see_group' gr.slug%}">{{ gr.title }}</a>
+            </li>
+            <li>
+                Описание: {{gr.desription}}
             </li>
         </ul>
     </article>

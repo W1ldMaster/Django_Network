@@ -16,7 +16,7 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     template = 'posts/group_list.html'
-    posts = Post.objects.filter(group=group).order_by('created_at')[:10]
+    posts = Post.objects.filter(group=group).order_by('-created_at')[:10]
     context = {
         'group': group.title,
         'posts': posts,
@@ -26,7 +26,23 @@ def group_posts(request, slug):
 
 def all_groups(request):
     template = 'posts/all_groups.html'
-    pass
+    groups = Group.objects.all()
+    context = {
+        'groups': groups
+    }
+    return render(request, template, context)
+
+
+def all_posts(request):
+    user_id = request.user.id
+    template = 'posts/all_posts.html'
+    #  posts = Post.objects.all().order_by('-created_at')
+    posts = Post.objects.filter(author_id=user_id)
+
+    context = {
+        'posts': posts
+    }
+    return render(request, template, context)
 
 
 def based(request):

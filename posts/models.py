@@ -4,10 +4,9 @@ from django.contrib import admin
 
 User = get_user_model()
 
-
 class Group(models.Model):
-    title = models.TextField()
-    slug = models.TextField()
+    title = models.CharField(max_length=50)
+    slug = models.CharField(max_length=25)
     desription = models.TextField()
 
     def __str__(self):

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All posts</title>
+</head>
+<body>
+    <article>
+        {% for ps in posts %}
+        <ul>
+            <li>
+                {{ps.author}} ({{ps.created_at}}): {{ ps.text }}
+            </li>
+        </ul>
+    </article>
+    {% endfor %}
+</body>
+</html>
+{% endblock %}
+
+<style>
+    li{
+    font-size: 20px;
+    font-family: "Comic Sans MS";
+    }
+</style>
