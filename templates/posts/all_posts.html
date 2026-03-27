@@ -1,26 +1,34 @@
 <!DOCTYPE html>
 {% block content %}
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>All posts</title>
 </head>
 <body>
     <article>
-        {% for ps in posts %}
+        {% for ps in page_obj %}
         <ul>
             <li>
-                {{ps.author}} ({{ps.created_at}}): {{ ps.text }}
+                {{ps.author}} ({{ps.created_at}}): Тема - {{ ps.group }}
             </li>
+            <p class="text">{{ ps.text }}</p>
         </ul>
+        <hr>
     </article>
     {% endfor %}
+    {% include 'posts/paginator.html' %}
 </body>
 </html>
 {% endblock %}
 
+
 <style>
     li{
+    font-size: 20px;
+    font-family: "Comic Sans MS";
+    }
+    .text{
     font-size: 20px;
     font-family: "Comic Sans MS";
     }

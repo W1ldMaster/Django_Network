@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 from .models import Post, Group
+from django.core.paginator import Paginator
 
 
 def index(request):
@@ -34,28 +35,15 @@ def all_groups(request):
 
 
 def all_posts(request):
-    user_id = request.user.id
     template = 'posts/all_posts.html'
-    #  posts = Post.objects.all().order_by('-created_at')
-    posts = Post.objects.filter(author_id=user_id)
+
+    posts = Post.objects.all().order_by('-created_at')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'posts': posts
+        'page_obj': page_obj
     }
-    return render(request, template, context)
-
-
-def based(request):
-    template = 'homework.html'
-    title = 'Yandex'
-    text = 'Ссылка для перехода на официальный сайт Яндекс'
-    url = 'https://ya.ru'
-
-    context = {
-        'title': title,
-        'text': text,
-        'url': url
-    }
-
     return render(request, template, context)
 

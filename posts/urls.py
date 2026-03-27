@@ -4,7 +4,7 @@ from . import views
 app_name = 'posts'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.all_posts, name='index'),
     path('group/<slug:slug>', views.group_posts, name='see_group'),
     path('groups', views.all_groups, name='group_list'),
     path('group/all', views.all_groups),
