@@ -1,4 +1,9 @@
 asgiref==3.11.1
-Django==6.0.3
+da-vinci==0.5.0
+Django==6.0.2
+django-thumbnails==0.8.0
+pillow==12.1.1
+shortuuid==1.0.13
+sorl-thumbnail==13.0.0
 sqlparse==0.5.5
 tzdata==2025.3

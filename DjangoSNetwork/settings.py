@@ -32,9 +32,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'about.apps.AboutConfig',
+    'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'groups.apps.GroupsConfig',
     'posts.apps.PostsConfig',
+    'sorl.thumbnails',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -125,3 +128,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')  # ./Django_Network/static
 ]
+
+
+LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'posts:index'
+#  LOGOUT_REDIRECT_URL = 'posts:index'
+
+EMAIL_BACKENDS = 'django.core.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+

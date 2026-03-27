@@ -27,8 +27,8 @@
     {% if not forloop.last %}
     <hr>{% endif %}
     {% endfor %}
+    {% include 'posts/paginator.html' %}
 </div>
-<!--{% include 'posts/includes/paginator.html' %}-->
 {% endblock %}
 
 <style>

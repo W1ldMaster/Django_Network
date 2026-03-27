@@ -17,10 +17,15 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     template = 'posts/group_list.html'
-    posts = Post.objects.filter(group=group).order_by('-created_at')[:10]
+    posts = Post.objects.filter(group=group).order_by('-created_at')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    title = f'Записи сообщества: {slug}'
     context = {
-        'group': group.title,
-        'posts': posts,
+        'title': title,
+        'group': group,
+        'page_obj': page_obj,
     }
     return render(request, template, context)
 
