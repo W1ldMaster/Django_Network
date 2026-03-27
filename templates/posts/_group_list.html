@@ -1,0 +1,41 @@
+{% comment %}
+<!--{% extends "base.html" %}-->
+{% endcomment %}
+<!--{% block content %}-->
+<div class="container py-5">
+  <h1>
+    {{group.title}}
+  </h1>
+  <p>
+    Группа любителей {{group.slug}} |
+    <a href="{% url 'posts:group_list' %}">Показать все группы</a>
+  </p>
+  <article>
+    {% for post in posts %}
+    <ul>
+      <li>
+        Ник: {{ post.author.get_username }}
+      </li>
+      <li>
+        Имя и Фамилия: {{ post.author.get_full_name }}
+      </li>
+      <li>
+        Дата публикации: {{ post.created_at|date:"d E Y" }}
+      </li>
+    </ul>
+    <p class="ptext"> {{post.text}}</p>
+    {% if not forloop.last %}
+    <hr>{% endif %}
+    {% endfor %}
+</div>
+<!--{% include 'posts/includes/paginator.html' %}-->
+{% endblock %}
+
+<style>
+  .ptext
+  {
+  font-size: 19px;
+  background-color: lightgray;
+  font-family: 'Comic Sans MS';
+  }
+</style>
