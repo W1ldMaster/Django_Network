@@ -1,24 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpRequest, HttpResponse
-from .models import Post, Group
+from .models import Post, Group, User
 from django.core.paginator import Paginator
+from .forms import PostCreateForm
 
-
-def index(request):
-    template = 'temp.html'
-    title = 'site'
-    context = {
-        'title': title,
-        'text': 'Главная страница'
-    }
-    return render(request, template, context)
 
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     template = 'posts/group_list.html'
-    posts = Post.objects.filter(group=group).order_by('-created_at')
+    posts = Post.objects.filter(group=group).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -41,9 +33,8 @@ def all_groups(request):
 
 
 def all_posts(request):
-    template = 'posts/all_posts.html'
-
-    posts = Post.objects.all().order_by('-created_at')
+    template = 'posts/index.html'
+    posts = Post.objects.all().order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -56,6 +47,7 @@ def all_posts(request):
 
 @login_required
 def post_create(request):
+    template = 'posts/create_post.html'
     groups = Group.objects.all()
     if request.method == 'POST':
         form = PostCreateForm(
@@ -68,12 +60,13 @@ def post_create(request):
             return redirect('posts:profile', request.user.username)
             # return redirect('posts:post_detail', post.post_id)
     form = PostCreateForm()
-    return render(request, 'posts/create_post.html',
+    return render(request, template,
                   {'form': form, 'groups': groups})
 
 
 @login_required
 def post_edit(request, post_id):
+    template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
     if post.author != request.user:
         return HttpResponse('Редактировать пост может только его автор')
@@ -92,4 +85,28 @@ def post_edit(request, post_id):
         'is_edit': True,
     }
 
-    return render(request, 'posts/create_post.html', context)
+    return render(request, template, context)
+
+
+def profile(request, username=None):
+    user = get_object_or_404(User, name=username)
+    posts = Post.objects.filter(user__name=username).order_by('-pub_date')
+    paginator = Paginator(posts, 10)
+    page_num = request.GET.get('page')
+    page = paginator.get_page(page_num)
+    sum_of_posts = len(posts)
+
+    template = 'posts/profile.html'
+    context = {
+        'posts': posts
+    }
+    return render(request, template, context)
+
+
+def post_detail(request, post_id):
+    template = 'posts/post_detail.html'
+    post = Post.objects.get(pk=post_id)
+    context = {
+        'post': post
+    }
+    return render(request, template, context)

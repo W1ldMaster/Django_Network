@@ -26,7 +26,12 @@ SECRET_KEY = 'django-insecure-zptki*4b5s@dn9fv!5qhbw3bg+zuj1pyec!5g&hk!7zr$z*%&^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver',
+]
 
 
 # Application definition
@@ -37,7 +42,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'groups.apps.GroupsConfig',
     'posts.apps.PostsConfig',
-    'sorl.thumbnails',
+    'sorl.thumbnail',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -136,4 +141,9 @@ LOGIN_REDIRECT_URL = 'posts:index'
 
 EMAIL_BACKENDS = 'django.core.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

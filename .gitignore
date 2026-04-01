@@ -5,3 +5,4 @@ venv/
 */__pycache__/
 virtenv/
 DjangoSNetwork/__pycache__/
+media/
