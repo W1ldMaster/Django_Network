@@ -1,10 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpRequest, HttpResponse
-from .models import Post, Group, User
+from .models import Post, Group, User, Comment
 from django.core.paginator import Paginator
-from .forms import PostCreateForm
-
+from .forms import PostCreateForm, CommentForm
 
 
 def group_posts(request, slug):
@@ -67,7 +66,7 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     template = 'posts/create_post.html'
-    post = get_object_or_404(Post, pk=post_id)
+    post = get_object_or_404(Post, id=post_id)
     if post.author != request.user:
         return HttpResponse('Редактировать пост может только его автор')
 
@@ -89,24 +88,63 @@ def post_edit(request, post_id):
 
 
 def profile(request, username=None):
-    user = get_object_or_404(User, name=username)
-    posts = Post.objects.filter(user__name=username).order_by('-pub_date')
+    if not username:
+        username = request.user.username
+
+    author = get_object_or_404(User, username=username)
+    posts = Post.objects.filter(author__username=username).order_by('-pub_date')
     paginator = Paginator(posts, 10)
-    page_num = request.GET.get('page')
-    page = paginator.get_page(page_num)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     sum_of_posts = len(posts)
 
     template = 'posts/profile.html'
     context = {
-        'posts': posts
+        'username': username,
+        'posts': posts,
+        'sum_of_posts': sum_of_posts,
+        'page_obj': page_obj
     }
     return render(request, template, context)
 
 
 def post_detail(request, post_id):
-    template = 'posts/post_detail.html'
-    post = Post.objects.get(pk=post_id)
+    post = get_object_or_404(Post, id=post_id)
+    form = CommentForm()
+    comments = Comment.objects.filter(post_id=post_id)
+    author = post.author
+    all_posts = Post.objects.filter(author=author)
+    sum_of_posts = len(all_posts)
     context = {
-        'post': post
+        'post': post,
+        'sum': sum_of_posts,
+        'form': form,
+        'comments': comments,
+    }
+    return render(request, 'posts/post_detail.html', context)
+
+
+def author_posts(request, author_id):
+    template = 'posts/author_posts.html'
+    posts = Post.objects.filter(author_id=author_id)
+    context = {
+        'posts': posts,
     }
     return render(request, template, context)
+
+
+@login_required
+def add_comment(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    form = CommentForm(request.POST or None)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.author = request.user
+        comment.post = post
+        comment.save()
+    return redirect('posts:post_detail', post_id=post_id)
+
+
+
+
+

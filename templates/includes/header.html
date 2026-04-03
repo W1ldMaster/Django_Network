@@ -42,10 +42,10 @@
           href="{% url 'users:password_change_form' %}">
             Изменить пароль</a>
         </li>
-        <li class="nav-item"> 
-          <a class="nav-link" href="{% url 'users:logout' %}">
-            Выйти</a>
-        </li>
+        <form method="post" action="{% url 'users:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="nav-link btn btn-link">Выйти</button>
+        </form>
         <li class="nav-item">
           <a class="nav-link" style="color:red" href="{% url 'posts:my_profile' %}">
             {{ user.username }}

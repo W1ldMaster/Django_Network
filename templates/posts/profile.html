@@ -6,7 +6,7 @@
       <div class="container py-5">        
         <h1>Пользователь {{ username }} </h1>
         <div class="container py-3">
-        <h3>Всего постов: {{ sum }} </h3>
+        <h3>Всего постов: {{ sum_of_posts }} </h3>
         {% if request.user.username != username %}
         </div>
         {% if following %}
