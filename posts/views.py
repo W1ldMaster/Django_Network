@@ -4,6 +4,8 @@ from django.http import HttpRequest, HttpResponse
 from .models import Post, Group, User, Comment, Follow
 from django.core.paginator import Paginator
 from .forms import PostCreateForm, CommentForm
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection
 
 
 def group_posts(request, slug):
@@ -33,13 +35,36 @@ def all_groups(request):
 
 def all_posts(request):
     template = 'posts/index.html'
+    title = 'Главная страница'
     posts = Post.objects.all().order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'title': title
+    }
+    return render(request, template, context)
+
+
+@login_required
+def followed_posts(request):
+    template = 'posts/index.html'
+    title = 'Избранные авторы'
+
+    folllowing = Follow.objects.filter(author_id=request.user.id).values_list('user_id')
+    posts = Post.objects.filter(author__id__in=folllowing).order_by('-pub_date')
+
+    #  print(f"Количество запросов: {len(connection.queries)}")
+
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'title': title
     }
     return render(request, template, context)
 
@@ -92,6 +117,10 @@ def profile(request, username=None):
         username = request.user.username
 
     author = get_object_or_404(User, username=username)
+    try:
+        following = Follow.objects.get(author=request.user, user=author)
+    except ObjectDoesNotExist:
+        following = False
     posts = Post.objects.filter(author__username=username).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
@@ -103,7 +132,8 @@ def profile(request, username=None):
         'username': username,
         'posts': posts,
         'sum_of_posts': sum_of_posts,
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'following': following
     }
     return render(request, template, context)
 
@@ -149,15 +179,15 @@ def add_comment(request, post_id):
 def profile_follow(request, username):
     follow_author = get_object_or_404(User, username=username)
     if request.user != follow_author:
-        Follow.objects.get_or_create(author=follow_author, user=request.user)
+        Follow.objects.get_or_create(author=request.user, user=follow_author)
     return redirect('posts:profile', username=username)
 
 
 @login_required
 def profile_unfollow(request, username):
     unfollow_from_author = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=request.user).filter(
-        author=unfollow_from_author).delete()
+    Follow.objects.filter(author=request.user).filter(
+        user=unfollow_from_author).delete()
     return redirect('posts:profile', username=username)
 
 

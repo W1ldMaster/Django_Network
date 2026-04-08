@@ -17,7 +17,7 @@
             Дата публикации: {{ post.pub_date|date:"d E Y" }}
           </li>
           <li>
-            Дата изменения: {{ post.edited|date:"d E Y" }}
+            Дата именения: {{ post.edited|date:"d E Y" }}
           </li>
             {% thumbnail post.image "480x170" crop="center" upscale=True as im %}
               <img class="card-img my-2" src="{{ im.url }}">
