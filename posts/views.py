@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpRequest, HttpResponse
-from .models import Post, Group, User, Comment
+from .models import Post, Group, User, Comment, Follow
 from django.core.paginator import Paginator
 from .forms import PostCreateForm, CommentForm
 
@@ -143,6 +143,23 @@ def add_comment(request, post_id):
         comment.post = post
         comment.save()
     return redirect('posts:post_detail', post_id=post_id)
+
+
+@login_required
+def profile_follow(request, username):
+    follow_author = get_object_or_404(User, username=username)
+    if request.user != follow_author:
+        Follow.objects.get_or_create(author=follow_author, user=request.user)
+    return redirect('posts:profile', username=username)
+
+
+@login_required
+def profile_unfollow(request, username):
+    unfollow_from_author = get_object_or_404(User, username=username)
+    Follow.objects.filter(user=request.user).filter(
+        author=unfollow_from_author).delete()
+    return redirect('posts:profile', username=username)
+
 
 
 
