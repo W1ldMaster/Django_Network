@@ -1,6 +1,7 @@
 {% if user.is_authenticated %}
   <div class="row my-3">
-    <ul class="nav nav-tabs">
+    <article>
+    <ul class="nav nav-tabs" margin-left="8%">
       <li class="nav-item">
         <a 
           class="nav-link {% if index %}active{% endif %}"
@@ -18,5 +19,6 @@
         </a>
       </li>
     </ul>
+      </article>
   </div>
 {% endif %}

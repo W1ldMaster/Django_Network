@@ -10,6 +10,7 @@ urlpatterns = [
     path('groups/all', views.all_groups, name='all_groups'),
     path('post/new/', views.post_create, name='post_create'),
     path('post/<int:post_id>/edit/', views.post_edit, name='post_edit'),
+    #  path('post/new/', views.PostCreateView.as_view(), name='post_create'),
     path('posts', views.all_posts, name='post_list'),
     path('profile/<str:username>/', views.profile, name='profile'),
     path('my/profile/', views.profile, name='my_profile'),

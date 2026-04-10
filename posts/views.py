@@ -5,7 +5,10 @@ from .models import Post, Group, User, Comment, Follow
 from django.core.paginator import Paginator
 from .forms import PostCreateForm, CommentForm
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import connection
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 
 
 def group_posts(request, slug):
@@ -34,9 +37,16 @@ def all_groups(request):
 
 
 def all_posts(request):
+    keyword = request.GET.get('q', None)
     template = 'posts/index.html'
     title = 'Главная страница'
-    posts = Post.objects.all().order_by('-pub_date')
+    if keyword:
+        posts = (Post.objects.filter(Q(text__icontains=keyword) |
+                                     Q(author__username__icontains=keyword) |
+                                     Q(author__first_name__icontains=keyword) |
+                                     Q(author__last_name__icontains=keyword)).select_related('author'))
+    else:
+        posts = Post.objects.all().order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -190,6 +200,12 @@ def profile_unfollow(request, username):
         user=unfollow_from_author).delete()
     return redirect('posts:profile', username=username)
 
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'posts/create_post.html'
+    model = Post
+    form_class = PostCreateForm
+    success_url = reverse_lazy('posts:profile')
 
 
 
