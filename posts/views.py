@@ -1,14 +1,16 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpRequest, HttpResponse
-from .models import Post, Group, User, Comment, Follow
-from django.core.paginator import Paginator
-from .forms import PostCreateForm, CommentForm
-from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.decorators.cache import cache_page
+from django.views.generic import CreateView
+
+from .forms import CommentForm, PostCreateForm
+from .models import Comment, Follow, Group, Post, User
 
 
 def group_posts(request, slug):
@@ -36,6 +38,7 @@ def all_groups(request):
     return render(request, template, context)
 
 
+@cache_page(60)
 def all_posts(request):
     keyword = request.GET.get('q', None)
     template = 'posts/index.html'

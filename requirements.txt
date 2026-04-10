@@ -1,8 +1,13 @@
+asgiref==3.11.1
 da-vinci==0.5.0
-Django==6.0.2
+Django==4.2.29
 django-thumbnails==0.8.0
-pillow==12.1.1
+importlib_metadata==8.7.1
+isort==6.1.0
+pillow==11.3.0
 shortuuid==1.0.13
-sorl-thumbnail==13.0.0
+sorl-thumbnail==12.11.0
 sqlparse==0.5.5
-tzdata==2025.3
+typing_extensions==4.15.0
+tzdata==2026.1
+zipp==3.23.0
