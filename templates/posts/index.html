@@ -8,17 +8,22 @@
       <article>
         <ul>
           <li>
-            Автор:
-            <a href="{% url 'posts:profile' post.author %}">
-            {{ post.author.get_full_name }}
-            </a>
+          {% if post.author.avatar %}
+          {% thumbnail post.author.avatar "50" crop="center" upscale=True as im %}
+          <a href="{% url 'posts:profile' post.author %}">
+          </a>
+          <img width="50" height="50" style="border-radius: 50%;" src="{{ im.url }}">  <a href="{% url 'posts:profile' post.author.username %}">{{ post.author.username }}</a>
+          {% endthumbnail %}
+          {% else %}
+          <a href="{% url 'posts:profile' post.author.username %}">{{ post.author.username }}</a>
+          {% endif %}
           </li>
           <li>
-            Дата публикации: {{ post.pub_date|date:"d E Y" }}
+            Дата публикации: {{ post.pub_date|date:"d E Y H:i:s" }}
           </li>
-          {% if post.pub_date != post.edited %}
+          {% if post.pub_date|date:"d E Y H:i:s" != post.edited|date:"d E Y H:i:s" %}
           <li>
-            Дата изменения: {{ post.edited|date:"d E Y" }}
+            Дата изменения: {{ post.edited|date:"d E Y H:i:s" }}
           </li>
           {% endif %}
           {% if post.group %}

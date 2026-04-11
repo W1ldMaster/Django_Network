@@ -1,7 +1,7 @@
 {% if user.is_authenticated %}
   <div class="row my-3">
-    <article>
-    <ul class="nav nav-tabs" margin-left="8%">
+    <ul class="nav nav-tabs">
+      <article class="articleinswitcher"></article>
       <li class="nav-item">
         <a 
           class="nav-link {% if index %}active{% endif %}"
@@ -19,6 +19,12 @@
         </a>
       </li>
     </ul>
-      </article>
+
   </div>
 {% endif %}
+
+<style>
+  .articleinswitcher{
+  margin-left: 5%;
+  }
+</style>

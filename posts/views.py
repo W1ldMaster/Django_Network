@@ -31,14 +31,16 @@ def group_posts(request, slug):
 
 def all_groups(request):
     template = 'posts/all_groups.html'
+    title = 'Группы'
     groups = Group.objects.all()
     context = {
-        'groups': groups
+        'groups': groups,
+        'title': title
     }
     return render(request, template, context)
 
 
-@cache_page(60)
+# @cache_page(60)
 def all_posts(request):
     keyword = request.GET.get('q', None)
     template = 'posts/index.html'
@@ -56,7 +58,7 @@ def all_posts(request):
 
     context = {
         'page_obj': page_obj,
-        'title': title
+        'title': title,
     }
     return render(request, template, context)
 
@@ -140,13 +142,17 @@ def profile(request, username=None):
     page_obj = paginator.get_page(page_number)
     sum_of_posts = len(posts)
 
+    follows = Follow.objects.filter(user_id=author.id).count
+
     template = 'posts/profile.html'
     context = {
         'username': username,
         'posts': posts,
         'sum_of_posts': sum_of_posts,
         'page_obj': page_obj,
-        'following': following
+        'following': following,
+        'author': author,
+        'num_of_followers': follows,
     }
     return render(request, template, context)
 

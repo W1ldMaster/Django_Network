@@ -3,10 +3,15 @@
 {% block title %}Профайл пользователя {{ username }}{% endblock title %}
  {% block content %}
     <main>
-      <div class="container py-5">        
-        <h1>Пользователь {{ username }} </h1>
+      <div class="container py-5">
+          {% if author.avatar %}
+          {% thumbnail author.avatar "150" crop="center" upscale=True as im %}
+          <h1><img width="150px" height="150px" style="border-radius: 50%;" src="{{ im.url }}"> {{ username }} </h1>
+          {% endthumbnail %}
+          {% else %}
+          <h1>{{ username }} </h1>
+          {% endif %}
         <div class="container py-3">
-        <h3>Всего постов: {{ sum_of_posts }} </h3>
         {% if request.user.username != username %}
         </div>
         {% if following %}
@@ -24,17 +29,20 @@
         Подписаться
       </a>
    {% endif %}
+
    {% endif %}
+                   <h3 style="margin-top: 1%;">Всего постов: {{ sum_of_posts }} </h3>
+                  <h3 style="margin-top: 1%;">Количество подписчиков: {{ num_of_followers }} </h3>
         <article>
         {% for post in page_obj %}
         <div class="container py-3">
           <ul>
                       <li>
-            Дата публикации: {{ post.pub_date|date:"d E Y" }}
+            Дата публикации: {{ post.pub_date|date:"d E Y H:i:s" }}
           </li>
-          {% if post.pub_date != post.edited %}
+          {% if post.pub_date|date:"d E Y H:i:s" != post.edited|date:"d E Y H:i:s" %}
           <li>
-            Дата изменения: {{ post.edited|date:"d E Y" }}
+            Дата изменения: {{ post.edited|date:"d E Y H:i:s" }}
           </li>
           {% endif %}
           {% if post.group %}

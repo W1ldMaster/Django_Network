@@ -13,7 +13,7 @@ class CreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('first_name', 'last_name', 'username', 'email')
+        fields = ('first_name', 'last_name', 'username', 'email', 'avatar')
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
