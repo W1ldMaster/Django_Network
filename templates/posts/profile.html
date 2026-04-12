@@ -29,8 +29,13 @@
         Подписаться
       </a>
    {% endif %}
-
    {% endif %}
+          <a
+        class="btn btn-lg btn-primary"
+        href="{% url 'posts:liked_posts' username %}" role="button"
+      >
+        Пэшнутые посты
+      </a>
                    <h3 style="margin-top: 1%;">Всего постов: {{ sum_of_posts }} </h3>
                   <h3 style="margin-top: 1%;">Количество подписчиков: {{ num_of_followers }} </h3>
         <article>

@@ -3,6 +3,9 @@
 {% block content %}
 {% include 'posts/includes/switcher.html' %}
 {% load thumbnail %}
+  {% if liked_author %}
+    <h1 style="margin-left: 5%">Пэшнутые посты {{ liked_author }}</h1>
+  {% endif %}
 {% for post in page_obj %}
     <div class="container py-5">
       <article>

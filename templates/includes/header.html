@@ -13,16 +13,16 @@
       Класс nav-pills нужен для выделения активных пунктов 
       {% endcomment %}
       <ul class="nav nav-pills">
-        <li class="nav-item"> 
+        <li class="nav-item unq" style="margin-right: 25px; margin-top: 3px;">
                 <form class="form-inline" action="/">
                   <div class="form-row">
-                  <input name="q" class="form-control form-control-sm" style="background-color:lightskyblue" type="search" 
+                  <input name="q" class="form-control form-control-sm" style="background-color:lightskyblue;" type="search"
                     placeholder="Поиск" {% if keyword %}value="{{ keyword }}"{% endif %}>
                   <!--<button class="btn" type="submit">Найти</button>-->
                   </div>
                 </form>
         </li>
-        <li class="nav-item"> 
+        <li class="nav-item">
           <a class="nav-item nav-link
           {% if view_name == 'about:author' %}active{% endif %}"
           href="{% url 'about:author' %}">Об авторе</a>
@@ -40,21 +40,37 @@
           <a class="nav-link {% if view_name == 'posts:post_create' %}active{% endif %}"
           href="{% url 'posts:post_create' %}">Новая запись</a>
         </li>
-        <li class="nav-item"> 
-          <a class="nav-link
-          {% if view_name == 'users:password_change_form' %}active{% endif %}"
-          href="{% url 'users:password_change_form' %}">
-            Изменить пароль</a>
-        </li>
-        <form method="post" action="{% url 'users:logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="nav-link btn btn-link">Выйти</button>
-        </form>
-        <li class="nav-item">
+
+
+
+
+
+        <li class="nav-item dropdown">
           <a class="nav-link" style="color:red" href="{% url 'posts:my_profile' %}">
             {{ user.username }}
-           </a>
+          </a>
+
+          <div class="dropdown-content">
+            <a class="nav-link
+               {% if view_name == 'users:password_change_form' %}active{% endif %} podblock"
+               href="{% url 'users:password_change_form' %}"> Изменить пароль</a>
+
+            <a class="nav-link podblock"
+               href="{% url 'users:profile_edit' %}"> Изменить профиль</a>
+
+            <form class="nav-item podblock" method="post" action="{% url 'users:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link podblock">Выйти с профиля</button></form>
+          </div>
         </li>
+
+
+
+
+
+
+
+
         {% else %}
         <li class="nav-item"> 
           <a class="nav-link link-light" href="{% url 'users:login' %}">Войти</a>
@@ -71,3 +87,45 @@
     </div>
   </nav>      
 </header>
+
+<style>
+  .podblock{
+  margin-top: 5px;
+  color: black;
+  text-align:center;
+  }
+  .dropdown {
+    position: relative;
+     z-index: 9999;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .nav-item:hover {
+    color: white;
+    background-color: #0d6efd;
+    border-radius: 7px;
+  }
+  .nav-link:hover {
+    color: white;
+    background-color: #0d6efd;
+    border-radius: 7px;
+  }
+  .nav-item{
+  margin-left: 5px;
+  margin-right: 5px;
+  }
+  .nav-link{
+  margin-left: 5px;
+  margin-right: 5px;
+  }
+  .unq:hover{
+  background-color:#87cefa;
+  }
+</style>

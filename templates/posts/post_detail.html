@@ -23,6 +23,8 @@
             <li class="list-group-item d-flex justify-content-between align-items-center"><a href="{% url 'posts:author_posts' post.author_id %}">
               Всего постов автора: </a><span >{{ sum }}</span>
             </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Всего Пэшек: {% if sum_of_likes %} {{ sum_of_likes }} {% else %} 0 {% endif %}
             </li>
           </ul>
         </aside>
@@ -39,9 +41,25 @@
           <!-- эта кнопка видна только автору -->
           {% if request.user == post.author %}
           <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">
-            редактировать
+            Редактировать
+          </a>
+          <a class="btn btn-primary" href="{% url 'posts:post_delete' post.pk %}">
+            Удалить
           </a>
           {% endif %}
+            {% if user.is_authenticated %}
+              {% if post.author != request.user %}
+                {% if not liked %}
+            <a class="btn btn-primary" href="{% url 'posts:like_post' post.pk %}">
+            Пэшнуть
+          </a>
+              {% else %}
+            <a class="btn btn-light" href="{% url 'posts:unlike_post' post.pk %}">
+            Анпешнуть
+          </a>
+                {% endif %}
+              {% endif %}
+            {% endif %}
           {% include 'includes/comments.html' %}
         </div>         
         </article>

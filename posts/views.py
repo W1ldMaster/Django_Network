@@ -10,7 +10,7 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView
 
 from .forms import CommentForm, PostCreateForm
-from .models import Comment, Follow, Group, Post, User
+from .models import Comment, Follow, Group, Post, User, Like
 
 
 def group_posts(request, slug):
@@ -134,7 +134,7 @@ def profile(request, username=None):
     author = get_object_or_404(User, username=username)
     try:
         following = Follow.objects.get(author=request.user, user=author)
-    except ObjectDoesNotExist:
+    except ObjectDoesNotExist or TypeError:
         following = False
     posts = Post.objects.filter(author__username=username).order_by('-pub_date')
     paginator = Paginator(posts, 10)
@@ -160,15 +160,26 @@ def profile(request, username=None):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm()
-    comments = Comment.objects.filter(post_id=post_id)
+    comments = Comment.objects.filter(post_id=post_id).order_by('-pub_date')
     author = post.author
     all_posts = Post.objects.filter(author=author)
     sum_of_posts = len(all_posts)
+
+    all_liked = Like.objects.filter(post=post)
+    sum_of_likes = len(all_liked)
+
+    try:
+        liked = Like.objects.filter(post=post).filter(user=request.user)
+    except ObjectDoesNotExist or TypeError:
+        liked = False
+
     context = {
         'post': post,
         'sum': sum_of_posts,
         'form': form,
         'comments': comments,
+        'liked': liked,
+        'sum_of_likes': sum_of_likes
     }
     return render(request, 'posts/post_detail.html', context)
 
@@ -210,11 +221,59 @@ def profile_unfollow(request, username):
     return redirect('posts:profile', username=username)
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'posts/create_post.html'
-    model = Post
-    form_class = PostCreateForm
-    success_url = reverse_lazy('posts:profile')
+@login_required
+def like_post(request, post_id):
+    liked_post = get_object_or_404(Post, id=post_id)
+    Like.objects.get_or_create(post=liked_post, user=request.user)
+
+    return redirect('posts:post_detail', post_id=post_id)
+
+
+@login_required
+def unlike_post(request, post_id):
+    liked_post = get_object_or_404(Post, id=post_id)
+    Like.objects.filter(post_id=post_id).filter(user=request.user).delete()
+
+    return redirect('posts:post_detail', post_id=post_id)
+
+
+def liked_posts(request, username=None):
+    template = 'posts/index.html'
+
+    if not username:
+        username = request.user.username
+    author = get_object_or_404(User, username=username)
+    title = f'Пэшнутые посты {username}'
+
+    likes = Like.objects.filter(user=author).values_list('post_id')
+    posts = Post.objects.filter(pk__in=likes).order_by('-pub_date')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'title': title,
+        'liked_author': author.username
+    }
+
+    return render(request, template, context)
+
+
+def post_delete(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    if post.author == request.user:
+        post.delete()
+    else:
+        pass
+    return redirect('posts:index')
+
+
+# class PostCreateView(LoginRequiredMixin, CreateView):
+#     template_name = 'posts/create_post.html'
+#     model = Post
+#     form_class = PostCreateForm
+#     success_url = reverse_lazy('posts:profile')
 
 
 
