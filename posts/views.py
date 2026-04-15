@@ -99,8 +99,7 @@ def post_create(request):
             return redirect('posts:profile', request.user.username)
             # return redirect('posts:post_detail', post.post_id)
     form = PostCreateForm()
-    return render(request, template,
-                  {'form': form, 'groups': groups})
+    return render(request, template,{'form': form, 'groups': groups})
 
 
 @login_required
