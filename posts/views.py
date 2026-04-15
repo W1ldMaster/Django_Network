@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView
+from django.db import connection
 
 from .forms import CommentForm, PostCreateForm
 from .models import Comment, Follow, Group, Post, User, Like
@@ -40,7 +41,7 @@ def all_groups(request):
     return render(request, template, context)
 
 
-# @cache_page(60)
+@cache_page(5)
 def all_posts(request):
     keyword = request.GET.get('q', None)
     template = 'posts/index.html'
@@ -55,7 +56,6 @@ def all_posts(request):
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
     context = {
         'page_obj': page_obj,
         'title': title,
@@ -134,7 +134,9 @@ def profile(request, username=None):
     author = get_object_or_404(User, username=username)
     try:
         following = Follow.objects.get(author=request.user, user=author)
-    except ObjectDoesNotExist or TypeError:
+    except TypeError:
+        following = False
+    except ObjectDoesNotExist:
         following = False
     posts = Post.objects.filter(author__username=username).order_by('-pub_date')
     paginator = Paginator(posts, 10)
@@ -170,7 +172,9 @@ def post_detail(request, post_id):
 
     try:
         liked = Like.objects.filter(post=post).filter(user=request.user)
-    except ObjectDoesNotExist or TypeError:
+    except ObjectDoesNotExist:
+        liked = False
+    except TypeError:
         liked = False
 
     context = {
@@ -185,10 +189,18 @@ def post_detail(request, post_id):
 
 
 def author_posts(request, author_id):
+    author = get_object_or_404(User, pk=author_id)
+    title = f'Посты {author.username}'
     template = 'posts/author_posts.html'
-    posts = Post.objects.filter(author_id=author_id)
+    posts = Post.objects.filter(author_id=author_id).order_by('-pub_date')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'posts': posts,
+        'page_obj': page_obj,
+        'title': title,
+        'author': author
     }
     return render(request, template, context)
 

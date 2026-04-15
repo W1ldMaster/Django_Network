@@ -1,21 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-{% for post in posts %}
+{% load thumbnail %}
 <div class="container py-5">
   <!--<h1>Последние обновления на сайте</h1>-->
-  <article>
-    <ul>
-      <li>
-        Дата публикации: {{ post.pub_date|date:"d E Y" }}
-      </li>
-    </ul>
-      <a href="{% url 'posts:post_detail' post.pk %}">
-    <p>{{ post.text }}</p>
-      </a>
-    {% if post.group %}
-    <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-    {% endif %}
-    {% if not forloop.last %}
-    <hr>{% endif %}
+          {% if author.avatar %}
+          {% thumbnail author.avatar "75" crop="center" upscale=True as im %}
+           <h1> <img width="75" height="75" style="border-radius: 50%;" src="{{ im.url }}"> Посты {{ author.username }}</h1>
+          {% endthumbnail %}
+          {% else %}
+          <h1>Посты {{ author.username }}</h1>
+          {% endif %}
+{% for post in page_obj %}
+    <div class="container py-5">
+      <article>
+        <ul>
+          <li>
+            Дата публикации: {{ post.pub_date|date:"d E Y H:i:s" }}
+          </li>
+          {% if post.pub_date|date:"d E Y H:i:s" != post.edited|date:"d E Y H:i:s" %}
+          <li>
+            Дата изменения: {{ post.edited|date:"d E Y H:i:s" }}
+          </li>
+          {% endif %}
+          {% if post.group %}
+          <li>
+        <p>Группа: <a href="{% url 'posts:group_list' post.group.slug %}">{{post.group}}</a></p>
+          </li>
+          {% endif %}
+            {% thumbnail post.image "370" crop="center" as im %}
+              <img width="{{ im.width }}" height="{{ im.height }}" class="card-img my-2" src="{{ im.url }}">
+            {% endthumbnail %}
+        </ul>
+          <p>{{ post.text }}</p>
+          <a href="{% url 'posts:post_detail' post.pk %}"> Перейти на пост </a>
+    <hr>
+        {% include 'posts/includes/paginator.html' %}
+      </article>
+    </div>
+</div>
 {% endfor %}
 {% endblock content %}
