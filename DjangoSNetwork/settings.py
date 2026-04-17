@@ -38,6 +38,8 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'api.apps.ApiConfig',
+    'rest_framework.authtoken',
     'about.apps.AboutConfig',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework'
 ]
 
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -158,3 +161,8 @@ CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
