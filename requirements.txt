@@ -1,10 +1,9 @@
 asgiref==3.11.1
 da-vinci==0.5.0
-Django==6.0.2
+Django
 django-thumbnails==0.8.0
-djangorestframework==3.17.1
-pillow==12.1.1
+djangorestframework
 shortuuid==1.0.13
-sorl-thumbnail==13.0.0
+sorl-thumbnail
 sqlparse==0.5.5
 tzdata==2025.3

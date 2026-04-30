@@ -12,8 +12,13 @@ router.register('groups', GroupViewSet, basename='groups')
 router.register('posts/(?P<post_id>\\d+)/comments', CommentViewSet, basename='comments')
 
 
+
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('<str:author_username>/follow/', FollowViewSet.as_view({
+        'post': 'create',
+        'delete': 'destroy'
+    }))
 ]
 
 
